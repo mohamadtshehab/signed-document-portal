@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload File</title>
+    <link rel="stylesheet" href="{% static 'css/upload.css' %}">
+</head>
+<body>
+    <h1>Upload File</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% load crispy_forms_tags %}
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit">Upload</button>
+    </form>
+    <form action="{% url 'documents' %}" method="get">
+        <button type="submit">Go to Documents</button>
+    </form>
+</body>
+</html>

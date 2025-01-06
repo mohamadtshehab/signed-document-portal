@@ -1,0 +1,46 @@
+# Python-related files
+*.pyc
+__pycache__/
+.Python
+
+# Django-specific files
+db.sqlite3
+*.log
+*.pot
+*.py[cod]
+*.mo
+ISSProject/settings.py
+
+# Virtual environment
+env/
+venv/
+.env
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.sublime-*
+
+# Static and media files
+staticfiles/
+media/
+
+# Build and distribution files
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Test and coverage files
+.tox/
+.coverage
+*.cover
+*.py,cover
+nosetests.xml
+coverage.xml
+
+# Other common files
+*.bak
+*.swp
+.DS_Store
+Thumbs.db

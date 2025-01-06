@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-stubs = "*"
+mypy = "*"
+django-material = "*"
+mysqlclient = "*"
+twilio = "*"
+django-csp = "*"
+cryptography = "*"
+dropbox = "*"
+django-storages = {extras = ["azure"], version = "*"}
+gunicorn = "*"
+waitress = "*"
+daphne = "*"
+django-ratelimit = "*"
+django-crispy-forms = "*"
+crispy-bootstrap4 = "*"
+django-extensions = "*"
+werkzeug = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

@@ -1,0 +1,46 @@
+{% load filters %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents</title>
+    <link rel="stylesheet" href="{% static 'css/documents.css' %}">
+</head>
+<body>
+    <h1>Documents</h1>
+    {% load crispy_forms_tags %}
+    {% if is_staff %}
+        <form method="get" action="{% url 'documents' %}">
+            <label for="national_id">Filter by National ID:</label>
+            <input type="text" id="national_id" name="national_id" value="{{ request.GET.national_id }}">
+            <button type="submit">Search</button>
+        </form>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th>Uploaded By</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% load crispy_forms_tags %}
+            {% for file in files %}
+                <tr>
+                    <td>{{ file.file.name|basename }}</td>
+                    <td>{{ file.user.first_name }} {{ file.user.last_name }}</td>
+                    <td><a href="{% url 'download' file.id %}">Download</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No documents found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
