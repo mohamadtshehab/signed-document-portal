@@ -22,6 +22,9 @@ django-crispy-forms = "*"
 crispy-bootstrap4 = "*"
 django-extensions = "*"
 werkzeug = "*"
+azure-identity = "*"
+azure-keyvault-secrets = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
