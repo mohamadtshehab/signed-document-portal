@@ -1,0 +1,13 @@
+<!-- In your templates directory, create a file named header.html -->
+<header>
+    <nav>
+        <ul>
+            {% if is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>

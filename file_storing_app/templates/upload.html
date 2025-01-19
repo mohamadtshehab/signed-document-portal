@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'css/upload.css' %}">
 </head>
 <body>
+    {% include 'header.html' %}
     <h1>Upload File</h1>
     <form method="post" enctype="multipart/form-data">
         {% load crispy_forms_tags %}

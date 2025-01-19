@@ -1,16 +1,18 @@
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import serialization, hashes
-from cryptography import x509
-import datetime
 import hashlib
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 import subprocess
 from django.core.exceptions import ValidationError
 import os
 import tempfile
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from functools import wraps
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.x509 import CertificateSigningRequestBuilder
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+import requests
+import datetime
 
 class CertificateAuthority:
     def generate_ca_key_pair(self):

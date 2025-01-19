@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/documents.css' %}">
 </head>
 <body>
+    {% include 'header.html' %}
     <h1>Documents</h1>
     {% load crispy_forms_tags %}
     {% if is_staff %}
