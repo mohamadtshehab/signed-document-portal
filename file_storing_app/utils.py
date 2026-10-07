@@ -8,10 +8,8 @@ from functools import wraps
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.x509 import CertificateSigningRequestBuilder
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-import requests
 import datetime
 
 class CertificateAuthority:
@@ -171,14 +169,25 @@ class CertificateAuthority:
 class MalwareScanner:
     @staticmethod
     def is_safe(file):
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(file.read())
-            temp_file.close()
-            result = subprocess.run(['MpCmdRun.exe', '-Scan', '-ScanType', '3', '-File', temp_file.name], stdout=subprocess.PIPE)
-            if b'found no threats' not in result.stdout:
-                os.remove(temp_file.name)
-                raise ValidationError('File contains a virus and has been deleted.')
-            os.remove(temp_file.name)
+        """Scan an upload with ClamAV before storing it."""
+        try:
+            with tempfile.NamedTemporaryFile() as temp_file:
+                for chunk in file.chunks():
+                    temp_file.write(chunk)
+                temp_file.flush()
+                try:
+                    result = subprocess.run(
+                        ["clamscan", "--no-summary", temp_file.name],
+                        capture_output=True,
+                        timeout=120,
+                        check=False,
+                    )
+                except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+                    raise ValidationError("Malware scanning is unavailable. Please contact the administrator.") from exc
+                if result.returncode != 0:
+                    raise ValidationError("The file failed the malware scan.")
+        finally:
+            file.seek(0)
         return True
     
 
@@ -195,6 +204,6 @@ def require_registration_session(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         if not request.session.get('phone_number') or not request.session.get('user_data'):
-            return redirect('registeration')
+            return redirect('register')
         return view_func(request, *args, **kwargs)
     return _wrapped_view

@@ -43,3 +43,14 @@ coverage.xml
 *.swp
 .DS_Store
 Thumbs.db
+
+# Local credentials and generated certificate material
+ISSProject/secrets.py
+variables.env
+*.pem
+*.key
+*.crt
+*.csr
+.env.*
+!.env.example
+.venv/

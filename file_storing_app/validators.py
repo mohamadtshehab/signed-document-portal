@@ -15,4 +15,4 @@ def validate_birth_date(value):
     
 def validate_file_size(file, max_file_size = 10 * 1024 * 1024):
     if file.size > max_file_size:
-        raise ValueError("File size exceeds the limit")
+        raise ValidationError("File size exceeds the limit")

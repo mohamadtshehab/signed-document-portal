@@ -38,21 +38,18 @@ def uploads(request):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document = form.save(commit=False)
-            if not MalwareScanner.is_safe(request.FILES['file']):
-                raise ValidationError("Malware detected. File removed")
-            
-            document.user = request.user
-            document.hash = Hasher.generate_file_hash(request.FILES['file'])
-            
-            ca = CertificateAuthority()
-            ca_private_key = ca.load_ca_private_key()
-            ca_certificate = ca.load_ca_certificate()
-            
-            document_signature = ca.sign_document(request.FILES['file'], ca_private_key)
-            document.signature = document_signature
-            
-            document.save()
-            return redirect('success')
+            try:
+                MalwareScanner.is_safe(request.FILES['file'])
+                document.user = request.user
+                document.hash = Hasher.generate_file_hash(request.FILES['file'])
+                ca = CertificateAuthority()
+                ca_private_key = ca.load_ca_private_key()
+                document.signature = ca.sign_document(request.FILES['file'], ca_private_key)
+                request.FILES['file'].seek(0)
+                document.save()
+                return redirect('success')
+            except (ValidationError, FileNotFoundError) as exc:
+                form.add_error('file', str(exc))
     else:
         form = DocumentForm()
     return render(request, 'upload.html', {'form': form})
@@ -85,12 +82,10 @@ def download(request, file_id):
     if not request.user.is_staff and document.user != request.user:
         return HttpResponseForbidden("You're not authorized to download this document.")
 
-    # Verify file integrity by comparing hashes
     current_hash = Hasher.generate_file_hash(document.file)
     if current_hash != document.hash:
         return HttpResponseForbidden("The file may be corrupted.")
 
-    # Serve the file and its signature for download
     response = HttpResponse(document.file, content_type='application/octet-stream')
     response['Content-Disposition'] = f'attachment; filename={quote(document.file.name)}'
     return response
